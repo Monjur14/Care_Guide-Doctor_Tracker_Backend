@@ -28,6 +28,20 @@ export function createApp() {
     res.json({ status: 'ok' });
   });
 
+  // Friendly landing response for anyone opening the API's root URL in a browser.
+  app.get('/', (_req, res) => {
+    res.json({
+      message: 'Welcome to the Doctor Tracker API. The backend is up and running.',
+      status: 'ok',
+      version: 'v1',
+      endpoints: {
+        health: '/api/health',
+        api: '/api/v1',
+        ...(apiDocsEnabled && { docs: '/api/docs', openapi: '/api/openapi.json' }),
+      },
+    });
+  });
+
   if (apiDocsEnabled) app.use('/api', docsRouter); // GET /api/docs, GET /api/openapi.json
 
   app.use('/api/v1', noStore, apiLimiter, csrfProtection, ensureDb, apiRouter);

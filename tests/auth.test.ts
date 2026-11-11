@@ -4,6 +4,14 @@ import { User } from '../src/models';
 import { ADMIN, ORIGIN, app, createAdmin, loggedInAgent, request } from './helpers';
 
 describe('auth', () => {
+  it('root URL greets visitors and points to the docs', async () => {
+    const res = await request(app).get('/');
+    expect(res.status).toBe(200);
+    expect(res.body.status).toBe('ok');
+    expect(res.body.message).toMatch(/Welcome to the Doctor Tracker API/);
+    expect(res.body.endpoints.health).toBe('/api/health');
+  });
+
   it('health check is public and leaks nothing', async () => {
     const res = await request(app).get('/api/health');
     expect(res.status).toBe(200);
